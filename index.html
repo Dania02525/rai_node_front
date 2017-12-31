@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Rai Full Node</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Sidebar -->
+			<section id="sidebar">
+				<div>
+					<h2>
+						<span id='usdValue'>...</span>&nbsp;<span class='tiny' id="changePercent">...</span>
+					</h2>
+				</div>
+				<div class="inner">
+					<nav>
+						<ul>
+							<li><a href="#count">Status</a></li>
+							<li><a href="#peers">Peers</a></li>
+							<li><a href="#donate">Donate</a></li>
+							<li><a href="#contact">Get in touch</a></li>
+						</ul>
+					</nav>
+				</div>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Intro -->
+					<section id="count" class="wrapper style1 fullscreen fade-up">
+						<div class="inner">
+							<h2>Rai Node Status: <span id="status">...</span></h2>
+							<p><span id="block-count">...</span> Blocks Counted</p>
+							<p><span id="unchecked">...</span> Blocks Unchecked</p>
+						</div>
+					</section>
+
+				<!-- One -->
+					<section id="peers" class="wrapper style2 spotlights">
+						<section>
+							<div class="content">
+								<div class="inner">
+									<h2>Connected Peers</h2>
+									<ul id='peers-list'>
+									</ul>
+								</div>
+							</div>
+						</section>
+					</section>
+
+				<!-- Two -->
+					<section id="donate" class="wrapper style3 fade-up">
+						<div class="inner">
+							<h2>Donations appreciated</h2>
+              <p>One XRB currently runs this node for <span id='timePerRai'>...</span></p>
+              <p id='donationAccount'>...</p>
+						</div>
+					</section>
+
+				<!-- Three -->
+					<section id="contact" class="wrapper style1 fade-up">
+						<div class="inner">
+							<h2>Who Am I?</h2>
+              <p><a href="https://github.com/Dania02525">Github</a></p>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper style1-alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+			<script defer src="https://use.fontawesome.com/releases/v5.0.2/js/all.js"></script>
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/rai.rpc.js"></script>
+			<script>
+				// enter your monthly server cost, donation account and rai node host here
+				var serverMonthlyCost = 5;
+				var host = "http://127.0.0.1:7076";
+				var donationAccount = 'xrb_1nbam1fsgwonmg3wjb3zsrj75ri5i6dqfr3w8zhr8j7oxr8miippt7buchar';
+				/*
+					In your config.json for the rai node, set rpc address to '::ffff:127.0.0.1'
+					for loopback to localhost.  Be sure to enable rpc, but enable_control should
+					be false.
+				*/
+
+				$(document).ready(function() {
+					$('#donationAccount').html(donationAccount);
+					var rai = new Rai(host);
+					rai.rpc(JSON.stringify({"action":"block_count"}), function(resp) {
+						$('#block-count').html(resp.count);
+						$('#unchecked').html(resp.unchecked);
+						$('#status').html('UP')
+					});
+
+					rai.rpc(JSON.stringify({"action":"peers"}), function(resp) {
+						console.log(resp);
+						var peers = Object.keys(resp.peers);
+						for(i = 0; i < 10; i++) {
+							$('#peers-list').append('<li>' + peers[i].replace('::ffff:', '').replace('[', '').replace(']', '') + '</li>');
+						}
+					});
+
+					getCurrentRaiValue(function(resp) {
+						var result = resp[0];
+						var changePercent = parseFloat(result.percent_change_24h);
+						var usdValue = parseFloat(result.price_usd);
+						var serverCostPerHour = (serverMonthlyCost / 720);
+						var hoursPerRai = (Math.round((usdValue / serverCostPerHour) * 10) / 10);
+
+						var timePerRaiText;
+						if (hoursPerRai >= 720) {
+							timePerRaiText = (Math.round((hoursPerRai / 720) * 10) / 10) + ' months';
+						} else if (hoursPerRai >= 24) {
+							timePerRaiText = (Math.round((hoursPerRai / 24) * 10) / 10) + ' days';
+						} else {
+							timePerRaiText = hoursPerRai + ' hours';
+						}
+						$('#timePerRai').html(timePerRaiText);
+						$('#usdValue').html(numeral(usdValue).format('$0,0.00'));
+
+						if (changePercent >= 0) {
+							$('#changePercent').addClass('green-color');
+							$('#changePercent').html('<i class="fa fa-caret-up" aria-hidden="true"></i>' + changePercent + '%');
+						} else {
+							$('#changePercent').addClass('red-color');
+							$('#changePercent').html('<i class="fa fa-caret-down" aria-hidden="true"></i>' + changePercent + '%');
+						}
+					});
+				});
+
+				function getCurrentRaiValue(async_callback) {
+					try {
+						let xhr;
+						xhr = new XMLHttpRequest();
+						xhr.onload = function (e) {
+							if (xhr.readyState === 4 && xhr.status === 200) {
+								let json = JSON.parse(xhr.responseText);
+								// Errors as JSON
+								let error = json.error;
+								if (typeof error != 'undefined') {
+									this.error(error);
+								}
+								async_callback(json);
+							}
+							else {
+								console.error('XHR Failure');
+							}
+						};
+
+						xhr.onerror = function (e) {
+							console.error(xhr.statusText);
+						};
+
+						xhr.open("GET", 'https://api.coinmarketcap.com/v1/ticker/raiblocks/?convert=USD', true);
+						xhr.send();
+					}
+					catch (ex) {
+						this.error(ex.message);
+					}
+				}
+			</script>
+	</body>
+</html>
