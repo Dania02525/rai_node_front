@@ -13,6 +13,7 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/5.0.0/bignumber.min.js" integrity="sha256-imNS71ds6yky6XEDq/jR3vyASHJHdgMhf9yAE1uikWI=" crossorigin="anonymous"></script>
 	</head>
 	<body>
 
@@ -44,6 +45,7 @@
 							<h2>Rai Node Status: <span id="status">...</span></h2>
 							<p><span id="block-count">...</span> Blocks Counted</p>
 							<p><span id="unchecked">...</span> Blocks Unchecked</p>
+							<p>Representing <span id="votingWeight"></span> from <span id="delegatorCount"></span> delegators</p>
 						</div>
 					</section>
 
@@ -66,6 +68,7 @@
 							<h2>Donations appreciated</h2>
               <p>One XRB currently runs this node for <span id='timePerRai'>...</span></p>
               <p id='donationAccount'>...</p>
+              <p>Current donation balance: <span id="donationBalance">...</span>
 						</div>
 					</section>
 
@@ -103,7 +106,7 @@
 				// enter your monthly server cost, donation account and rai node host here
 				var serverMonthlyCost = 5;
 				var host = "http://127.0.0.1:7076";
-				var donationAccount = 'xrb_1nbam1fsgwonmg3wjb3zsrj75ri5i6dqfr3w8zhr8j7oxr8miippt7buchar';
+				var donationAccount = 'xrb_3ueo1n395ajb16pkbjr657z9g78q7bfymd4tirfpbuswmawhwj6tun873hnp';
 				/*
 					In your config.json for the rai node, set rpc address to '::ffff:127.0.0.1'
 					for loopback to localhost.  Be sure to enable rpc, but enable_control should
@@ -126,6 +129,24 @@
 							$('#peers-list').append('<li>' + peers[i].replace('::ffff:', '').replace('[', '').replace(']', '') + '</li>');
 						}
 					});
+
+					var accountResp = rai.account_balance(donationAccount);
+					console.log(accountResp);
+					var donationBalance = XRB.unit(accountResp.balance + accountResp.pending, 'raw', 'krai');
+					donationBalance = parseFloat(donationBalance) / 10000;
+					$('#donationBalance').html(donationBalance + ' XRB');
+
+					var delegators = rai.delegators(donationAccount, 'Mrai')
+					console.log(delegators)
+					var delegatorCount = 0;
+					var votingWeight = 0;
+					for(var i in delegators) {
+						votingWeight += delegators[i];
+						delegatorCount += 1;
+					}
+					votingWeight = parseFloat(votingWeight) / 100;
+					$('#votingWeight').html(votingWeight + ' XRB');
+					$('#delegatorCount').html(delegatorCount);
 
 					getCurrentRaiValue(function(resp) {
 						var result = resp[0];
