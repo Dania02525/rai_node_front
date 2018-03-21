@@ -4,4 +4,4 @@ A basic frontend to see blocks, peers, current NANO value, and server time per N
 
 Contributions Welcome!
 
-![screenshot](https://raw.githubusercontent.com/dania02525/rai_node_front/master/screenshot.png)
+![screenshot](screenshot.png)
