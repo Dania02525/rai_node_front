@@ -1,0 +1,4 @@
+var serverMonthlyCost = 5;
+var host = "http://127.0.0.1:7076";
+var donationAccount = "xrb_3ueo1n395ajb16pkbjr657z9g78q7bfymd4tirfpbuswmawhwj6tun873hnp";
+var representativeAccount = "xrb_3ueo1n395ajb16pkbjr657z9g78q7bfymd4tirfpbuswmawhwj6tun873hnp";
