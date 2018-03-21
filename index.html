@@ -66,7 +66,7 @@
 					<section id="donate" class="wrapper style3 fade-up">
 						<div class="inner">
 							<h2>Donations appreciated</h2>
-              <p>One XRB currently runs this node for <span id='timePerRai'>...</span></p>
+              <p>One NANO currently runs this node for <span id='timePerRai'>...</span></p>
               <p id='donationAccount'>...</p>
               <p>Current donation balance: <span id="donationBalance">...</span>
 						</div>
@@ -131,7 +131,7 @@
 					console.log(accountResp);
 					var donationBalance = XRB.unit(accountResp.balance + accountResp.pending, 'raw', 'krai');
 					donationBalance = parseFloat(donationBalance) / 10000;
-					$('#donationBalance').html(donationBalance + ' XRB');
+					$('#donationBalance').html(donationBalance + ' NANO');
 
 					var delegators = rai.delegators(representativeAccount, 'Mrai');
 					console.log(delegators);
@@ -142,7 +142,7 @@
 						delegatorCount += 1;
 					}
 					votingWeight = parseFloat(votingWeight);
-					$('#votingWeight').html(votingWeight + ' XRB');
+					$('#votingWeight').html(votingWeight + ' NANO');
 					$('#delegatorCount').html(delegatorCount);
 
 					getCurrentRaiValue(function(resp) {
