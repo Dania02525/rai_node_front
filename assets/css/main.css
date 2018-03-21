@@ -3290,6 +3290,10 @@
 			-ms-justify-content: center;
 			justify-content: center;
 			min-height: 100vh;
+			background-image: url("../../assets/img/bg-logo-dark.png");
+			background-repeat: no-repeat;
+			background-position: right bottom;
+			background-size: 80%;
 		}
 
 			body.is-ie .wrapper.fullscreen {

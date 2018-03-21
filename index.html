@@ -11,6 +11,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
 		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/qr-block.css" />
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/5.0.0/bignumber.min.js" integrity="sha256-imNS71ds6yky6XEDq/jR3vyASHJHdgMhf9yAE1uikWI=" crossorigin="anonymous"></script>
@@ -29,8 +30,8 @@
 						<ul>
 							<li><a href="#count">Status</a></li>
 							<li><a href="#peers">Peers</a></li>
-							<li><a href="#donate">Donate</a></li>
-							<li><a href="#contact">Get in touch</a></li>
+							<li><a href="#donate">Support</a></li>
+							<li><a href="#contact">About</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -45,7 +46,6 @@
 							<h2>Nano Node Status: <span id="status">...</span></h2>
 							<p><span id="block-count">...</span> Blocks Counted</p>
 							<p><span id="unchecked">...</span> Blocks Unchecked</p>
-							<p>Representing <span id="votingWeight"></span> from <span id="delegatorCount"></span> delegators</p>
 						</div>
 					</section>
 
@@ -63,33 +63,41 @@
 					</section>
 
 				<!-- Two -->
-					<section id="donate" class="wrapper style3 fade-up">
+					<section id="donate" class="wrapper style1 fade-up">
 						<div class="inner">
-							<h2>Donations appreciated</h2>
-              <p>One NANO currently runs this node for <span id='timePerRai'>...</span></p>
-              <p id='donationAccount'>...</p>
-              <p>Current donation balance: <span id="donationBalance">...</span>
+							<h2>Support</h2>
+							<h3>Set your representative</h3>
+								<div class="qr-block">
+									<div class="qr" id="representativeqr"></div><textarea class="qr-address" id='representativeAccount'>...</textarea>
+									<button class="qr-button" onclick="copy('representativeAccount')">Copy Address</button>
+								</div><br>
+								<p>Representing <span id="votingWeight"></span> from <span id="delegatorCount"></span> delegators</p>
+							<h3>Make a small donation</h3>
+								<div class="qr-block">
+									<div class="qr" id="donationqr"></div><textarea class="qr-address" id='donationAccount'>...</textarea>
+									<button class="qr-button" onclick="copy('donationAccount')">Copy Address</button>
+								</div><br>
+              							<p>
+									One NANO currently runs this node for <span id='timePerRai'>...</span><br>
+									Current donation balance: <span id="donationBalance">...</span>
+								</p>
 						</div>
 					</section>
 
 				<!-- Three -->
-					<section id="contact" class="wrapper style1 fade-up">
+					<section id="contact" class="wrapper style1-alt">
 						<div class="inner">
-							<h2>Who Am I?</h2>
-              <p><a href="https://github.com/Dania02525">Github</a></p>
+						<h2>About</h2>
+
+							<ul class="menu">
+								<li>Original code: <a href="https://github.com/Dania02525">Github</a>
+								<li>Original design: <a href="http://html5up.net">HTML5 UP</a></li>
+								<li>Updates/Modifications: <a href="https://github.com/nanoxic">Nanoxic</a></li>
+							</ul>
 						</div>
 					</section>
 
 			</div>
-
-		<!-- Footer -->
-			<footer id="footer" class="wrapper style1-alt">
-				<div class="inner">
-					<ul class="menu">
-						<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-					</ul>
-				</div>
-			</footer>
 
 		<!-- Scripts -->
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
@@ -102,6 +110,7 @@
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
 			<script src="assets/js/main.js"></script>
 			<script src="assets/js/rai.rpc.js"></script>
+			<script src="assets/js/kjua-0.1.1.min.js"></script>
 			<script src="config.js"></script>
 			<script>
 				/*
@@ -112,6 +121,7 @@
 
 				$(document).ready(function() {
 					$('#donationAccount').html(donationAccount);
+					$('#representativeAccount').html(representativeAccount);
 					var rai = new Rai(host);
 					rai.rpc(JSON.stringify({"action":"block_count"}), function(resp) {
 						$('#block-count').html(resp.count);
@@ -129,9 +139,9 @@
 
 					var accountResp = rai.account_balance(donationAccount);
 					console.log(accountResp);
-					var donationBalance = XRB.unit(accountResp.balance + accountResp.pending, 'raw', 'krai');
-					donationBalance = parseFloat(donationBalance) / 10000;
-					$('#donationBalance').html(donationBalance + ' NANO');
+					var donationBalance = XRB.unit(accountResp.balance + accountResp.pending, 'raw', 'rai');
+					donationBalance = parseFloat(donationBalance) / 10000000;
+					$('#donationBalance').html(numeral(donationBalance).format('0,0.000000') + ' NANO');
 
 					var delegators = rai.delegators(representativeAccount, 'Mrai');
 					console.log(delegators);
@@ -171,6 +181,23 @@
 							$('#changePercent').html('<i class="fa fa-caret-down" aria-hidden="true"></i>' + changePercent + '%');
 						}
 					});
+
+					var repqr = kjua({
+						size: 100,
+						quiet: 0,
+						ecLevel: 'H',
+						rounded: 10,
+                		        	text: representativeAccount
+					});
+					$('#representativeqr').append(repqr);
+					var donqr = kjua({
+						size: 100,
+						quiet: 0,
+						ecLevel: 'H',
+						rounded: 10,
+                		        	text: donationAccount
+					});
+					$('#donationqr').append(donqr);
 				});
 
 				function getCurrentRaiValue(async_callback) {
@@ -202,6 +229,18 @@
 					catch (ex) {
 						this.error(ex.message);
 					}
+				}
+
+				function copy(id) {
+					console.log(id);
+
+					var copyText = document.getElementById(id);
+
+					/* Select the text field */
+					copyText.select();
+
+					/* Copy the text inside the text field */
+					document.execCommand("Copy");
 				}
 			</script>
 	</body>
