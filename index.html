@@ -144,7 +144,7 @@
 					var donationBalance = XRB.unit(accountResp.balance + accountResp.pending, 'raw', 'rai');
 					donationBalance = parseFloat(donationBalance) / 10000000;
 					$('#donationBalance').html(numeral(donationBalance).format('0,0.000000') + ' NANO');
-
+/*
 					var delegators = rai.delegators(representativeAccount, 'Mrai');
 					console.log(delegators);
 					var delegatorCount = 0;
@@ -156,7 +156,7 @@
 					votingWeight = parseFloat(votingWeight);
 					$('#votingWeight').html(votingWeight + ' NANO');
 					$('#delegatorCount').html(delegatorCount);
-
+*/
 					getCurrentRaiValue(function(resp) {
 						var result = resp[0];
 						var changePercent = parseFloat(result.percent_change_24h);
@@ -225,7 +225,7 @@
 							console.error(xhr.statusText);
 						};
 
-						xhr.open("GET", 'https://api.coinmarketcap.com/v1/ticker/raiblocks/?convert=USD', true);
+						xhr.open("GET", 'https://api.coinmarketcap.com/v1/ticker/raiblocks/?convert=EUR', true);
 						xhr.send();
 					}
 					catch (ex) {
