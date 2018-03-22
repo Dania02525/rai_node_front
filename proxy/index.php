@@ -6,7 +6,7 @@
 **/
 
 $node_url = "http://localhost:7076";
-$whiteList = array("block_count", "delegators", "delegators_count", "chain", "peers", "account_balance");//, "account_representative");
+$whiteList = array("block_count", "delegators_count", "chain", "peers", "account_balance");//, "account_representative");
 
 $options = array
 (

@@ -71,7 +71,7 @@
 									<div class="qr" id="representativeqr"></div><textarea class="qr-address" id='representativeAccount'>...</textarea>
 									<button class="qr-button" onclick="copy('representativeAccount')">Copy Address</button>
 								</div><br>
-								<p>Representing <span id="votingWeight"></span> from <span id="delegatorCount"></span> delegators</p>
+								<p>Representing <span id="delegatorCount"></span> delegators</p>
 							<h3>Make a small donation</h3>
 								<div class="qr-block">
 									<div class="qr" id="donationqr"></div><textarea class="qr-address" id='donationAccount'>...</textarea>
@@ -86,9 +86,8 @@
 
 				<!-- Three -->
 					<section id="contact" class="wrapper style1-alt">
-						<div class="inner">
-						<h2>About</h2>
-
+						<div class="inner" style="padding: 1em 4em 1em 4em;">
+						<h2  style="margin: 0;">About</h2>
 							<ul class="menu">
 								<li>Original code: <a href="https://github.com/Dania02525">Github</a>
 								<li>Original design: <a href="http://html5up.net">HTML5 UP</a></li>
@@ -144,6 +143,14 @@
 					var donationBalance = XRB.unit(accountResp.balance + accountResp.pending, 'raw', 'rai');
 					donationBalance = parseFloat(donationBalance) / 10000000;
 					$('#donationBalance').html(numeral(donationBalance).format('0,0.000000') + ' NANO');
+
+// String output
+/*this.delegators_count = function(account) {
+	var delegators_count = this.rpc(JSON.stringify({"action":"delegators_count","account":account}));
+	return delegators_count.count;
+}*/					
+					var delegatorCount = rai.delegators_count(representativeAccount);
+
 /*
 					var delegators = rai.delegators(representativeAccount, 'Mrai');
 					console.log(delegators);
@@ -154,13 +161,13 @@
 						delegatorCount += 1;
 					}
 					votingWeight = parseFloat(votingWeight);
-					$('#votingWeight').html(votingWeight + ' NANO');
+					$('#votingWeight').html(votingWeight + ' NANO'); */
 					$('#delegatorCount').html(delegatorCount);
-*/
+
 					getCurrentRaiValue(function(resp) {
 						var result = resp[0];
 						var changePercent = parseFloat(result.percent_change_24h);
-						var usdValue = parseFloat(result.price_usd);
+						var usdValue = parseFloat(result.price_eur);
 						var serverCostPerHour = (serverMonthlyCost / 720);
 						var hoursPerRai = (Math.round((usdValue / serverCostPerHour) * 10) / 10);
 
@@ -173,7 +180,8 @@
 							timePerRaiText = hoursPerRai + ' hours';
 						}
 						$('#timePerRai').html(timePerRaiText);
-						$('#usdValue').html(numeral(usdValue).format('$0,0.00'));
+						$('#usdValue').html('&euro; ' + numeral(usdValue).format('0.00'));
+//						$('#usdValue').html(numeral(usdValue).format('$0,0.00'));
 
 						if (changePercent >= 0) {
 							$('#changePercent').addClass('green-color');
