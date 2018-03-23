@@ -144,26 +144,6 @@
 					donationBalance = parseFloat(donationBalance) / 10000000;
 					$('#donationBalance').html(numeral(donationBalance).format('0,0.000000') + ' NANO');
 
-// String output
-/*this.delegators_count = function(account) {
-	var delegators_count = this.rpc(JSON.stringify({"action":"delegators_count","account":account}));
-	return delegators_count.count;
-}*/					
-					var delegatorCount = rai.delegators_count(representativeAccount);
-
-/*
-					var delegators = rai.delegators(representativeAccount, 'Mrai');
-					console.log(delegators);
-					var delegatorCount = 0;
-					var votingWeight = 0;
-					for(var i in delegators) {
-						votingWeight += delegators[i];
-						delegatorCount += 1;
-					}
-					votingWeight = parseFloat(votingWeight);
-					$('#votingWeight').html(votingWeight + ' NANO'); */
-					$('#delegatorCount').html(delegatorCount);
-
 					getCurrentRaiValue(function(resp) {
 						var result = resp[0];
 						var changePercent = parseFloat(result.percent_change_24h);
@@ -252,6 +232,9 @@
 					/* Copy the text inside the text field */
 					document.execCommand("Copy");
 				}
+
+				var delegatorCount = rai.delegators_count(representativeAccount);
+				$('#delegatorCount').html(delegatorCount);
 			</script>
 	</body>
 </html>
