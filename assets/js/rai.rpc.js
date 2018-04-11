@@ -23,7 +23,7 @@
 * Request sample
 *	var rai = new Rai();
 *	var block_count = rai.rpc(JSON.stringify({"action":"block_count"}), 'http://localhost:7076', false);
-*
+*	
 */
 
 var XRB = XRB || {};
@@ -36,9 +36,9 @@ XRB.error = function(error) {
 
 // Extended function, bignumber.js is required
 XRB.unit = function(input, input_unit, output_unit) {
-
+	
 	var value = new BigNumber(input.toString());
-
+	
 	// Step 1: to RAW
 	switch(input_unit) {
 		case 'raw': value = value; break;
@@ -53,7 +53,7 @@ XRB.unit = function(input, input_unit, output_unit) {
 		case 'prai': value = value.shift(15); break; // draft
 		default: value = value;
 	}
-
+	
 	// Step 2: to output
 	switch(output_unit) {
 		case 'raw': value = value; break;
@@ -68,7 +68,7 @@ XRB.unit = function(input, input_unit, output_unit) {
 		case 'prai': value = value.shift(-15); break; // draft
 		default: value = value;
 	}
-
+	
 	value = value.toFixed(0);
 	return value;
 }
@@ -114,20 +114,10 @@ this.error = function(error) {
 
 
 this.rpc = function(request, async_callback) {
-	try {
-		var url = document.createElement('a');
-		if (typeof url_base == 'undefined') { url.href = 'http://localhost'; } // if url is not set, use default to localhost
-		else if (!url_base.startsWith('http')) { url.href = 'http://' + url_base.split('/').reverse()[0]; } // local files are not supported; default protocol = HTTP
-		else { url.href = url_base; }
 
-		if (url.port== "") { url.port = '7076'; } // default port 7076
-	} catch (e) {
-		if (e instanceof ReferenceError) {
-			if (typeof url_base == 'undefined') { var url = 'http://localhost:7076'; }
-			else { var url = url_base; }
-		}
-		else { console.error(e); }
-	}
+	var url = document.createElement('a');
+	url.href = url_base;
+	
 	try {
 		// Asynchronous
 		if (typeof async_callback == 'function') {
@@ -147,22 +137,22 @@ this.rpc = function(request, async_callback) {
 					console.error('XHR Failure');
 				}
 			};
-
+			
 			xhr.onerror = function (e) {
 				console.error(xhr.statusText);
 			};
-
+			
 			xhr.open("POST", url, true);
 			xhr.send(request);
 		}
-
+		
 		// Synchronous
 		else {
 			let xhr;
 			xhr = new XMLHttpRequest();
 			xhr.open("POST", url, false);
 			xhr.send(request);
-
+			
 			if (xhr.readyState == 4 && xhr.status == 200) {
 				let json = JSON.parse(xhr.responseText);
 				// Errors as JSON
@@ -891,3 +881,4 @@ this.work_peers_clear = function() {
 }
 
 };
+

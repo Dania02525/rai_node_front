@@ -6,11 +6,12 @@
 -->
 <html>
 	<head>
-		<title>Rai Full Node</title>
+		<title id='title'>Nano Full Node</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
 		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/qr-block.css" />
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/5.0.0/bignumber.min.js" integrity="sha256-imNS71ds6yky6XEDq/jR3vyASHJHdgMhf9yAE1uikWI=" crossorigin="anonymous"></script>
@@ -29,8 +30,8 @@
 						<ul>
 							<li><a href="#count">Status</a></li>
 							<li><a href="#peers">Peers</a></li>
-							<li><a href="#donate">Donate</a></li>
-							<li><a href="#contact">Get in touch</a></li>
+							<li><a href="#donate">Support</a></li>
+							<li><a href="#contact">About</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -42,10 +43,9 @@
 				<!-- Intro -->
 					<section id="count" class="wrapper style1 fullscreen fade-up">
 						<div class="inner">
-							<h2>Rai Node Status: <span id="status">...</span></h2>
-							<p><span id="block-count">...</span> Blocks Counted</p>
-							<p><span id="unchecked">...</span> Blocks Unchecked</p>
-							<p>Representing <span id="votingWeight"></span> from <span id="delegatorCount"></span> delegators</p>
+							<h2><span id="nodeName">...</span> Status: <span id="status">...</span></h2>
+							<p><span id="block-count">...</span> Blocks Counted<br>
+							<span id="unchecked">...</span> Blocks Unchecked</p>
 						</div>
 					</section>
 
@@ -63,37 +63,44 @@
 					</section>
 
 				<!-- Two -->
-					<section id="donate" class="wrapper style3 fade-up">
+					<section id="donate" class="wrapper style1 fade-up">
 						<div class="inner">
-							<h2>Donations appreciated</h2>
-              <p>One XRB currently runs this node for <span id='timePerRai'>...</span></p>
-              <p id='donationAccount'>...</p>
-              <p>Current donation balance: <span id="donationBalance">...</span>
+							<h2>Support</h2>
+							<h3>Set your representative</h3>
+								<div class="qr-block">
+									<div class="qr" id="representativeqr"></div><textarea class="qr-address" id='representativeAccount'>...</textarea>
+									<button class="qr-button" onclick="copy('representativeAccount')">Copy Address</button>
+								</div><br>
+								<p>Representing <span id="delegatorCount"></span> delegators</p>
+							<h3>Make a small donation</h3>
+								<div class="qr-block">
+									<div class="qr" id="donationqr"></div><textarea class="qr-address" id='donationAccount'>...</textarea>
+									<button class="qr-button" onclick="copy('donationAccount')">Copy Address</button>
+								</div><br>
+              							<p>
+									One NANO currently runs this node for <span id='timePerRai'>...</span><br>
+									Current donation balance: <span id="donationBalance">...</span>
+								</p>
 						</div>
 					</section>
 
 				<!-- Three -->
-					<section id="contact" class="wrapper style1 fade-up">
-						<div class="inner">
-							<h2>Who Am I?</h2>
-              <p><a href="https://github.com/Dania02525">Github</a></p>
+					<section id="contact" class="wrapper style1-alt">
+						<div class="inner" style="padding: 1em 4em 1em 4em;">
+						<h2  style="margin: 0;">About</h2>
+							<ul class="menu">
+								<li>Original code: <a href="https://github.com/Dania02525">Github</a>
+								<li>Original design: <a href="http://html5up.net">HTML5 UP</a></li>
+								<li>Updates/Modifications: <a href="https://github.com/nanoxic">Nanoxic</a></li>
+							</ul>
 						</div>
 					</section>
 
 			</div>
 
-		<!-- Footer -->
-			<footer id="footer" class="wrapper style1-alt">
-				<div class="inner">
-					<ul class="menu">
-						<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-					</ul>
-				</div>
-			</footer>
-
 		<!-- Scripts -->
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
-			<script defer src="https://use.fontawesome.com/releases/v5.0.2/js/all.js"></script>
+			<script src="assets/js/numeral.min.js"></script>
+			<script src="assets/js/all.js"></script>
 			<script src="assets/js/jquery.min.js"></script>
 			<script src="assets/js/jquery.scrollex.min.js"></script>
 			<script src="assets/js/jquery.scrolly.min.js"></script>
@@ -102,19 +109,20 @@
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
 			<script src="assets/js/main.js"></script>
 			<script src="assets/js/rai.rpc.js"></script>
+			<script src="assets/js/kjua-0.1.1.min.js"></script>
+			<script src="config.js"></script>
 			<script>
-				// enter your monthly server cost, donation account and rai node host here
-				var serverMonthlyCost = 5;
-				var host = "http://127.0.0.1:7076";
-				var donationAccount = 'xrb_3ueo1n395ajb16pkbjr657z9g78q7bfymd4tirfpbuswmawhwj6tun873hnp';
 				/*
-					In your config.json for the rai node, set rpc address to '::ffff:127.0.0.1'
+					In your config.json for the Nano node, set rpc address to '::ffff:127.0.0.1'
 					for loopback to localhost.  Be sure to enable rpc, but enable_control should
 					be false.
 				*/
 
 				$(document).ready(function() {
 					$('#donationAccount').html(donationAccount);
+					$('#representativeAccount').html(representativeAccount);
+					$('#title').html(name);
+					$('#nodeName').html(name);
 					var rai = new Rai(host);
 					rai.rpc(JSON.stringify({"action":"block_count"}), function(resp) {
 						$('#block-count').html(resp.count);
@@ -132,26 +140,14 @@
 
 					var accountResp = rai.account_balance(donationAccount);
 					console.log(accountResp);
-					var donationBalance = XRB.unit(accountResp.balance + accountResp.pending, 'raw', 'krai');
-					donationBalance = parseFloat(donationBalance) / 10000;
-					$('#donationBalance').html(donationBalance + ' XRB');
-
-					var delegators = rai.delegators(donationAccount, 'Mrai')
-					console.log(delegators)
-					var delegatorCount = 0;
-					var votingWeight = 0;
-					for(var i in delegators) {
-						votingWeight += delegators[i];
-						delegatorCount += 1;
-					}
-					votingWeight = parseFloat(votingWeight) / 100;
-					$('#votingWeight').html(votingWeight + ' XRB');
-					$('#delegatorCount').html(delegatorCount);
+					var donationBalance = XRB.unit(accountResp.balance + accountResp.pending, 'raw', 'rai');
+					donationBalance = parseFloat(donationBalance) / 10000000;
+					$('#donationBalance').html(numeral(donationBalance).format('0,0.000000') + ' NANO');
 
 					getCurrentRaiValue(function(resp) {
 						var result = resp[0];
 						var changePercent = parseFloat(result.percent_change_24h);
-						var usdValue = parseFloat(result.price_usd);
+						var usdValue = parseFloat(result.price_eur);
 						var serverCostPerHour = (serverMonthlyCost / 720);
 						var hoursPerRai = (Math.round((usdValue / serverCostPerHour) * 10) / 10);
 
@@ -164,7 +160,8 @@
 							timePerRaiText = hoursPerRai + ' hours';
 						}
 						$('#timePerRai').html(timePerRaiText);
-						$('#usdValue').html(numeral(usdValue).format('$0,0.00'));
+						$('#usdValue').html('&euro; ' + numeral(usdValue).format('0.00'));
+//						$('#usdValue').html(numeral(usdValue).format('$0,0.00'));
 
 						if (changePercent >= 0) {
 							$('#changePercent').addClass('green-color');
@@ -174,6 +171,23 @@
 							$('#changePercent').html('<i class="fa fa-caret-down" aria-hidden="true"></i>' + changePercent + '%');
 						}
 					});
+
+					var repqr = kjua({
+						size: 100,
+						quiet: 0,
+						ecLevel: 'H',
+						rounded: 10,
+                		        	text: representativeAccount
+					});
+					$('#representativeqr').append(repqr);
+					var donqr = kjua({
+						size: 100,
+						quiet: 0,
+						ecLevel: 'H',
+						rounded: 10,
+                		        	text: donationAccount
+					});
+					$('#donationqr').append(donqr);
 				});
 
 				function getCurrentRaiValue(async_callback) {
@@ -199,13 +213,29 @@
 							console.error(xhr.statusText);
 						};
 
-						xhr.open("GET", 'https://api.coinmarketcap.com/v1/ticker/raiblocks/?convert=USD', true);
+						xhr.open("GET", 'https://api.coinmarketcap.com/v1/ticker/raiblocks/?convert=EUR', true);
 						xhr.send();
 					}
 					catch (ex) {
 						this.error(ex.message);
 					}
 				}
+
+				function copy(id) {
+					console.log(id);
+
+					var copyText = document.getElementById(id);
+
+					/* Select the text field */
+					copyText.select();
+
+					/* Copy the text inside the text field */
+					document.execCommand("Copy");
+				}
+
+				var delegatorCount = rai.delegators_count(representativeAccount);
+				$('#delegatorCount').html(delegatorCount);
 			</script>
 	</body>
 </html>
+
